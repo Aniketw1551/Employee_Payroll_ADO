@@ -37,6 +37,9 @@ namespace Employee_Payroll
             employeeRepository.UpdateBasicPayByPreparedStatement(Model);
             Console.WriteLine("Fetch Records in Specified date");
             employeeRepository.GetEmployeeDetailsByDate();
+            Console.WriteLine("Find SUM,MIN,MAX,AVG and COUNT from Database");
+            employeeRepository.DatabaseFunction();
+
         }
         static void Main(string[] args)
         {
