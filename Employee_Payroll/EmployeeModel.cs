@@ -14,7 +14,7 @@ namespace Employee_Payroll
         public long PhoneNumber { get; set; }
         public string Address { get; set; }
         public string Department { get; set; }
-        public string Gender { get; set; }
+        public char Gender { get; set; }
         public int BasicPay { get; set; }
         public int Deductions { get; set; }
         public int TaxablePay { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace Employee_Payroll
                             model.EmployeeName = sdr.GetString(1);
                             model.BasicPay = sdr.GetInt32(2);
                             model.StartDate = sdr.GetDateTime(3);
-                            model.Gender = sdr.GetString(4);
+                            model.Gender = Convert.ToChar(sdr.GetString(4));
                             model.PhoneNumber = sdr.GetInt64(5);
                             model.Address = sdr.GetString(6);
                             model.Department = sdr.GetString(7);
@@ -56,6 +57,47 @@ namespace Employee_Payroll
             finally
             {
                 this.connection.Close();
+            }
+        }
+        public void AddEmployee(EmployeeModel model)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand command = new SqlCommand("spAddEmployeeDetails", this.connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@name", model.EmployeeName);
+                    command.Parameters.AddWithValue("@basic_Pay", model.BasicPay);
+                    command.Parameters.AddWithValue("@start_date", model.StartDate);
+                    command.Parameters.AddWithValue("@Gender", model.Gender);
+                    command.Parameters.AddWithValue("@phonenumber", model.PhoneNumber);
+                    command.Parameters.AddWithValue("@address", model.Address);
+                    command.Parameters.AddWithValue("@department", model.Department);
+                    command.Parameters.AddWithValue("@Deductions", model.Deductions);
+                    command.Parameters.AddWithValue("@taxable_pay", model.TaxablePay);
+                    command.Parameters.AddWithValue("@income_tax", model.IncomeTax);
+                    command.Parameters.AddWithValue("@net_pay", model.NetPay);
+
+
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    this.connection.Close();
+                    if (result != 0)
+                        Console.WriteLine("Data inserted in DataBase");
+                    else
+                        Console.WriteLine(result);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
         }
     }
