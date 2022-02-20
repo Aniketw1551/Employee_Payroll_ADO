@@ -138,7 +138,7 @@ namespace Employee_Payroll
                 {
                     SqlCommand command = new SqlCommand("update employee_payroll set Base_Pay = @BasicPay where Name = @Name;", this.connection);
                     command.Prepare();
-                    command.Parameters.AddWithValue("@EmployeeName", model.EmployeeName);
+                    command.Parameters.AddWithValue("@Name", model.EmployeeName);
                     command.Parameters.AddWithValue("@BasicPay", model.BasicPay);
                     //Open Connection of Database
                     this.connection.Open();
