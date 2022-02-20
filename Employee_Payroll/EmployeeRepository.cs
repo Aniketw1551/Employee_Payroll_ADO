@@ -142,19 +142,70 @@ namespace Employee_Payroll
                     command.Parameters.AddWithValue("@BasicPay", model.BasicPay);
                     //Open Connection of Database
                     this.connection.Open();
-                    //Executes Sql statement to Update in Db.
-                    var rows = command.ExecuteNonQuery();
+                    //Executes Sql statement to Update in DB
+                    var result = command.ExecuteNonQuery();
                     //Close Connection of database
                     this.connection.Close();
-                    if (rows != 0)
-                        Console.WriteLine("Updated in Db");
+                    if (result != 0)
+                        Console.WriteLine("Data Updated in DB");
                     else
-                        Console.WriteLine(rows);
+                        Console.WriteLine(result);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        public void GetEmployeeDetailsByDate()
+        {
+            EmployeeModel employee = new EmployeeModel();
+            DateTime startDate = new DateTime(2014, 06, 11);
+            DateTime endDate = new DateTime(2016, 05, 08);
+            try
+            {
+                this.connection.Open();
+                SqlCommand sqlCommand = new SqlCommand("spGetDataByDate", this.connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                sqlCommand.Parameters.AddWithValue("@StartDate", startDate);
+                sqlCommand.Parameters.AddWithValue("@EndDate", endDate);
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        employee.EmployeeId = reader.GetInt32(0);
+                        employee.EmployeeName = reader.GetString(1);
+                        employee.BasicPay = reader.GetInt32(2);
+                        employee.StartDate = reader.GetDateTime(3);
+                        employee.Gender = Convert.ToChar(reader.GetString(4));
+                        employee.PhoneNumber = reader.GetInt64(5);
+                        employee.Address = reader.GetString(6);
+                        employee.Department = reader.GetString(7);
+                        employee.Deductions = reader.GetInt32(8);
+                        employee.TaxablePay = reader.GetInt32(9);
+                        employee.IncomeTax = reader.GetInt32(10);
+                        employee.NetPay = reader.GetInt32(11);
+
+                        //Display retrieved record
+                        Console.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", employee.EmployeeId, employee.EmployeeName, employee.PhoneNumber, employee.Address, employee.Department, employee.Gender, employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
+                        Console.WriteLine("\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No record found");
+                }
+                reader.Close();
+                this.connection.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
             finally
             {
