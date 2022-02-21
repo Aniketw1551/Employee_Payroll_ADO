@@ -13,6 +13,8 @@ namespace Employee_Payroll
          EmployeeRepository employeeRepository = new EmployeeRepository();
             //employeeRepository.GetEmployeeRecords();
             EmployeeModel Model = new EmployeeModel();
+            Payroll payroll = new Payroll();
+            Department department = new Department();
             Console.WriteLine("Add employee in database");
             Model.EmployeeId = 4;
             Model.EmployeeName = "Jayesh";
@@ -39,7 +41,10 @@ namespace Employee_Payroll
             employeeRepository.GetEmployeeDetailsByDate();
             Console.WriteLine("Find SUM,MIN,MAX,AVG and COUNT from Database");
             employeeRepository.DatabaseFunction();
-
+            Console.WriteLine("");
+            employeeRepository.AddEmployeeToPayroll(payroll,Model,department);
+            string deleteQuery = "delete from Payroll where employee_id=6;" + "delete from Department where employee_id = 6;" + "delete from Employee where employee_id = 6;";
+            employeeRepository.DeleteFeomAllATables(deleteQuery);
         }
         static void Main(string[] args)
         {

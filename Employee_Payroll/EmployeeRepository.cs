@@ -216,8 +216,8 @@ namespace Employee_Payroll
         {
             try
             {
-                DBFunctionOperations do = new DBFunctionOperations();
-                 using (this.connection)
+                DBFunctionOperations d = new DBFunctionOperations();
+                using (this.connection)
                 {
                     string queryDb = @"SELECT gender,COUNT(BasicPay) AS TotalCount,
                                    SUM(BasicPay) AS TotalSum, 
@@ -233,13 +233,13 @@ namespace Employee_Payroll
                     {
                         while (dr.Read())
                         {
-                            do.Gender = Convert.ToString(dr["Gender"]);
-                            do.Count = Convert.ToInt32(dr["TotalCount"]);
-                            do.TotalSum = Convert.ToDouble(dr["TotalSum"]);
-                            do.Avg = Convert.ToDouble(dr["AverageValue"]);
-                            do.Min = Convert.ToDouble(dr["MinValue"]);
-                            do.Max = Convert.ToDouble(dr["MaxValue"]);
-                            Console.WriteLine("Gender: {0}, TotalCount: {1}, TotalSalary: {2}, AvgSalary:  {3}, MinSalary:  {4}, MaxSalary:  {5}",do.Gender, do.Count, do.TotalSum, do.Avg,do.Min, do.Max);
+                            d.Gender = Convert.ToString(dr["Gender"]);
+                            d.Count = Convert.ToInt32(dr["TotalCount"]);
+                            d.TotalSum = Convert.ToDouble(dr["TotalSum"]);
+                            d.Avg = Convert.ToDouble(dr["AverageValue"]);
+                            d.Min = Convert.ToDouble(dr["MinValue"]);
+                            d.Max = Convert.ToDouble(dr["MaxValue"]);
+                            Console.WriteLine("Gender: {0}, TotalCount: {1}, TotalSalary: {2}, AvgSalary:  {3}, MinSalary:  {4}, MaxSalary:  {5}", d.Gender, d.Count, d.TotalSum, d.Avg, d.Min, d.Max);
                         }
                     }
                     else
@@ -260,5 +260,77 @@ namespace Employee_Payroll
             }
             Console.WriteLine();
         }
+        public void AddEmployeeToPayroll(Payroll payroll, EmployeeModel model, Department department)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand command = new SqlCommand("spAddEmpPayrollDetails", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@employee_id", model.EmployeeId = 6);
+                    command.Parameters.AddWithValue("@employee_name", model.EmployeeName = "Smith");
+                    command.Parameters.AddWithValue("@phone_no", model.PhoneNumber = 777765319);
+                    command.Parameters.AddWithValue("@address", model.Address = "Denmark");
+                    command.Parameters.AddWithValue("@gender", model.Gender = Convert.ToChar("M"));
+                    command.Parameters.AddWithValue("@payroll_Id", payroll.payrollId = "#5555");
+                    command.Parameters.AddWithValue("@basic_pay", payroll.basicPay = 200000);
+                    command.Parameters.AddWithValue("@deduction", payroll.deductions = 10000);
+                    command.Parameters.AddWithValue("@income_tax", payroll.incomeTax = 5000);
+                    command.Parameters.AddWithValue("@taxable_pay", payroll.taxablePay = 190000);
+                    command.Parameters.AddWithValue("@net_pay", payroll.netPay = 185000);
+                    command.Parameters.AddWithValue("@department_Id", department.departmentId = 105);
+                    command.Parameters.AddWithValue("@department_name", department.departmentName = "Fullstack");
+
+                    this.connection.Open();
+                    int result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        Console.WriteLine("Data added");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unsuccessful");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
+        public void DeleteFeomAllATables(string q)
+        {
+            try
+            {
+                Payroll Payroll = new Payroll();
+                using (this.connection)
+                {
+                    string query = q;
+
+                    //define SqlCommand Object
+                    SqlCommand cmd = new SqlCommand(query, this.connection);
+                    //establish connection
+                    this.connection.Open();
+                    Console.WriteLine("Connected");
+                    cmd.ExecuteReader();
+                    Console.WriteLine("Data deleted successfully");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                //close connection
+                this.connection.Close();
+            }
+        }
     }
 }
+    

@@ -1,5 +1,3 @@
-using payroll_service;
-
 CREATE PROCEDURE spAddEmployeeDetails
 @Name varchar(50),
 @BasicPay int,
@@ -20,7 +18,7 @@ End
 
 CREATE or Alter PROCEDURE spUpdateEmp
 (
- @BasicPay decimal,
+ @BasicPay int,
  @Name VARCHAR(200)
  )
  as
@@ -39,4 +37,31 @@ SELECT * FROM employee_payroll WHERE StartDate BETWEEN CAST(@StartDate AS DATE )
 End
 
 
+CREATE or ALTER PROCEDURE spAddEmpPayrollDetails
+(
+	@employee_name varchar(30),
+	@phone_no bigint,
+	@address varchar(100),
+	@gender char(2),
+	@basic_pay int,	
+	@deduction int,
+        @taxable_pay int,
+	@income_tax int,
+        @net_pay int,
+	@payroll_Id varchar(50),
+	@department_Id int,
+	@department_name varchar(20),
+	@employee_id int
+	
+)
+AS
+BEGIN
+
+	
+	insert into Employee values(@employee_id, @employee_name, @gender, @phone_no, @address);
+	insert into Payroll values(@payroll_Id, @basic_pay, @deduction, @taxable_pay, @income_tax, @net_pay, (SELECT employee_id FROM Employee WHERE employee_id=(SELECT MAX(employee_id) from Employee)));
+	insert into Department values(@department_Id, @departmentName, (SELECT employee_id FROM Employee WHERE employee_id=(SELECT MAX(employee_id) from Employee)));
+	
+
+END
 
